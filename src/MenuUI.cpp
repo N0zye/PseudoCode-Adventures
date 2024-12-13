@@ -1,8 +1,9 @@
 #include "MenuUI.h"
+
 #include "imgui.h"
 #include "imgui-SFML.h"
 #include "SFML/Graphics.hpp"
-
+#include <string>
 
 void ShowInfoMenu();
 void ShowLicenseMenu();
@@ -10,6 +11,7 @@ void ShowLicenseMenu();
 sf::RenderWindow* window; // Pointer to the main window
 
 std::string textBuffer(2048, '\0'); // Text buffer for the code editor
+std::string CodeEditorReturn;
 
 bool toogleInfoMenu = false;
 bool toogleLicenseMenu = false;
@@ -42,8 +44,8 @@ void ShowMainMenu() {
 				toogleLicenseMenu = true;
 			}
 			if (ImGui::MenuItem("GitHub Repository", nullptr)) {
-				system("start 
-
+				system("start https://github.com/N0zye/PseudoCode-Adventures.git");
+			}
 			ImGui::EndMenu();
 		}
 
@@ -54,9 +56,9 @@ void ShowMainMenu() {
 	if (toogleLicenseMenu) ShowLicenseMenu();
 }
 
-std::string CodeEditorReturn = "";
 std::string ShowCodeEditor() {
 	// Code editor window
+	CodeEditorReturn = "";
 	ImGui::Begin("#CodeEditor", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
 
 	// Set window size and position based on the parent window dimensions
@@ -91,7 +93,6 @@ void ShowInfoMenu() {
 }
 
 void ShowLicenseMenu() {
-	// Set the initial size of the window to 600x600
 	ImGui::SetNextWindowSize(ImVec2(1000, 390), ImGuiCond_Once);
 
 	ImGui::Begin("License", &toogleLicenseMenu, ImGuiWindowFlags_NoCollapse);
