@@ -15,6 +15,9 @@ std::string CodeEditorReturn;
 
 bool toogleInfoMenu = false;
 bool toogleLicenseMenu = false;
+bool toggleErrorMenu = false;
+
+std::string errorCommand;
 
 
 void UIinit(sf::RenderWindow& _window) {
@@ -54,35 +57,44 @@ void ShowMainMenu() {
 	// Show the info menu
 	if (toogleInfoMenu) ShowInfoMenu();
 	if (toogleLicenseMenu) ShowLicenseMenu();
+	if (toggleErrorMenu) {
+		ImGui::Begin("Error", &toggleErrorMenu, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
+		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "Errore, comando: %s non riconosciuto.", errorCommand.c_str());
+		ImGui::End();
+	}
+
 }
 
-std::string ShowCodeEditor() {
-	// Code editor window
+std::string ShowCodeEditor(bool isButtonEnabled) {
 	CodeEditorReturn = "";
 	ImGui::Begin("#CodeEditor", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove);
 
-	// Set window size and position based on the parent window dimensions
-	const ImVec2 editorSize(window->getSize().x * 0.40f, window->getSize().y * 0.975);
-	const ImVec2 editorPos(window->getSize().x * 0.60f, 30);
+	// Set window size and position
+	const ImVec2 editorSize(window->getSize().x * 0.44921875f, window->getSize().y * 0.975);
+	const ImVec2 editorPos(window->getSize().x * 0.55078125f, 30);
 	ImGui::SetWindowSize(editorSize);
 	ImGui::SetWindowPos(editorPos);
 
 	if (ImGui::Button("Avvia", ImVec2(100, 30))) {
-		CodeEditorReturn = textBuffer;
+		if (isButtonEnabled) CodeEditorReturn = textBuffer.data(); // Use the raw buffer as a string
 	}
-	ImGui::InputTextMultiline("##TextInput", textBuffer.data(), textBuffer.size(),
-		ImVec2(editorSize.x, editorSize.y - 60), // To fix for the button
-		ImGuiInputTextFlags_CharsUppercase | ImGuiInputTextFlags_AllowTabInput);
+
+	ImGui::InputTextMultiline(
+		"##TextInput",
+		textBuffer.data(), textBuffer.size(),
+		ImVec2(editorSize.x, editorSize.y - 60),
+		ImGuiInputTextFlags_CharsUppercase | ImGuiInputTextFlags_AllowTabInput
+	);
 
 	ImGui::End();
-	if (CodeEditorReturn != "") {
-		CodeEditorReturn = "";
-		return textBuffer;
+	if (!CodeEditorReturn.empty()) {
+		return CodeEditorReturn;
 	}
 	else {
 		return "";
 	}
 }
+
 
 void ShowInfoMenu() {
 	ImGui::Begin("Pseudocode Adventures", &toogleInfoMenu, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
@@ -93,7 +105,7 @@ void ShowInfoMenu() {
 }
 
 void ShowLicenseMenu() {
-	ImGui::SetNextWindowSize(ImVec2(1000, 390), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(1000, 436));
 
 	ImGui::Begin("License", &toogleLicenseMenu, ImGuiWindowFlags_NoCollapse);
 
@@ -130,4 +142,9 @@ void ShowLicenseMenu() {
 	ImGui::PopTextWrapPos();
 
 	ImGui::End();
+}
+
+void ShowErrorMenu(std::string error) {
+	toggleErrorMenu = true;
+	errorCommand = error;
 }

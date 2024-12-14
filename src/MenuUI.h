@@ -5,4 +5,5 @@
 
 void UIinit(sf::RenderWindow& window);
 void ShowMainMenu();
-std::string ShowCodeEditor();
+std::string ShowCodeEditor(bool isButtonEnabled);
+void ShowErrorMenu(std::string errorCommand);

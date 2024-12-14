@@ -2,7 +2,7 @@
 #include "imgui-SFML.h" // for ImGui::SFML::* functions and SFML-specific overloads
 #include <SFML\Graphics.hpp>
 #include "MenuUI.h"
-#include "Player.h"
+#include "Game.h"
 
 #include <iostream>
 
@@ -22,9 +22,11 @@ int main() {
 	io.Fonts->Build();
 	ImGui::SFML::UpdateFontTexture(); // If this is the solution I'll kill myself (it is) 
 
-	Player player(window);
-
-	sf::Clock deltaTime;
+	Game game(window);
+	bool isButtonEnabled = true;
+	std::queue<Commands> commandsToBeRun;
+	float deltaTime = 0.0f;
+	sf::Clock clockTime;
 	while (window.isOpen()) {
 		sf::Event event{};
 		while (window.pollEvent(event)) {
@@ -39,29 +41,42 @@ int main() {
 			}
 			ImGui::SFML::ProcessEvent(event);
 		}
-		ImGui::SFML::Update(window, deltaTime.restart());
+		deltaTime = clockTime.getElapsedTime().asMilliseconds();
+		ImGui::SFML::Update(window, clockTime.restart());
 
+		// ImGui code
+		ShowMainMenu();
+		std::string code = ShowCodeEditor(isButtonEnabled);
+		if (!code.empty()) {
+			try {
+				// to avoid adding commands to alredy going ones
+				if (commandsToBeRun.empty()) commandsToBeRun = ParseCode(code);
+			}
+			catch (std::exception e) {
+				ShowErrorMenu(e.what());
+			}
+		}
+		if (commandsToBeRun.empty()) {
+			isButtonEnabled = true;
+		}
+		else {
+			isButtonEnabled = false;
+			game.runCommand(commandsToBeRun.front());
+			commandsToBeRun.pop();
+		}
 
 		// ImGui debug windows
-#ifdef _DEBUG
+		#ifdef _DEBUG
 		ImGui::ShowMetricsWindow();
 		//ImGui::ShowDemoWindow();
 		//ImGui::ShowFontSelector("##FontSelector");
 		//ImGui::ShowStyleSelector("##StyleSelector");
-#endif // _DEBUG
+		#endif // _DEBUG
 
-
-
-
-// ImGui code
-		ShowMainMenu();
-		std::string code = ShowCodeEditor();
-		if (code != "") {
-			// Do something with the code
-		}
+		// SFML Rendering
 		window.clear();
+		game.Draw();
 		ImGui::SFML::Render(window);
-		player.Draw();
 		window.display();
 
 	}
