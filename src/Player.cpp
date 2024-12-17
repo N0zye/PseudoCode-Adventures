@@ -26,10 +26,10 @@ void Player::Update(Commands command) {
 	float gridcellSize = (0.55078125f * window->getSize().x / WIDTH);
 	int scaledX = x / gridcellSize;
 	int scaledY = (y - 30) / gridcellSize;
-	int upGridCellType = grid.grid[scaledX][scaledY - 1];
-	int downGridCellType = grid.grid[scaledX][scaledY + 1];
-	int leftGridCellType = grid.grid[scaledX - 1][scaledY];
-	int rightGridCellType = grid.grid[scaledX + 1][scaledY];
+	int upGridCellType = grid.grid[scaledY - 1][scaledX];
+	int downGridCellType = grid.grid[scaledY + 1][scaledX];
+	int leftGridCellType = grid.grid[scaledY][scaledX - 1];
+	int rightGridCellType = grid.grid[scaledY][scaledX + 1];
 	switch (command)
 	{
 	case SU:
@@ -39,12 +39,12 @@ void Player::Update(Commands command) {
 		break;
 	case GIU:
 		if (downGridCellType != 1 && downGridCellType != 3) {
-			if (y <= 0.55078125f * window->getSize().y - 2 * gridcellSize) y += gridcellSize;
+			if (y <= window->getSize().y - 2*gridcellSize) y += gridcellSize;
 		}
 		break;
 	case DESTRA:
 		if (rightGridCellType != 1 && rightGridCellType != 3) {
-			if (x <= 0.55078125f * window->getSize().x - 2 * gridcellSize) x += gridcellSize;
+			if (x <= 0.55078125f * window->getSize().x - gridcellSize - 30) x += gridcellSize;
 		}
 		break;
 	case SINISTRA:
@@ -53,24 +53,29 @@ void Player::Update(Commands command) {
 		}
 		break;
 	case RACCOGLI:
-		if (grid.grid[scaledX][scaledY] == 2) {
-			grid.grid[scaledX][scaledY] = 0;
+		if (grid.grid[scaledY][scaledX] == 2) {
+			grid.grid[scaledY][scaledX] = 0;
 			hasKey = true;
 		}
 		break;
 	case APRI:
-		std::cout << hasKey << std::endl;
-		if (leftGridCellType == 3 && hasKey) {
-			grid.grid[scaledX - 1][scaledY] = 4;
-		}
-		else if (rightGridCellType == 3 && hasKey) {
-			grid.grid[scaledX + 1][scaledY] = 4;
-		}
-		else if (upGridCellType == 3 && hasKey) {
-			grid.grid[scaledX][scaledY - 1] = 4;
-		}
-		else if (downGridCellType == 3 && hasKey) {
-			grid.grid[scaledX][scaledY + 1] = 4;
+		if (hasKey) {
+			if (leftGridCellType == 3) {
+				grid.grid[scaledY][scaledX - 1] = 4;
+				hasKey = false;
+			}
+			else if (rightGridCellType == 3) {
+				grid.grid[scaledY][scaledX + 1] = 4;
+				hasKey = false;
+			}
+			else if (upGridCellType == 3) {
+				grid.grid[scaledY - 1][scaledX] = 4;
+				hasKey = false;
+			}
+			else if (downGridCellType == 3) {
+				grid.grid[scaledY + 1][scaledX] = 4;
+				hasKey = false;
+			}
 		}
 		break;
 	}
