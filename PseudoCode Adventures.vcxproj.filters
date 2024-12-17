@@ -386,6 +386,9 @@
     <ClInclude Include="src\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Levels.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="include\SFML\Audio\SoundFileFactory.inl">
@@ -432,5 +435,11 @@
     <Image Include="assets\textures\player.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="assets\textures\exit.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\fonts\Inconsolata-Regular.ttf" />
   </ItemGroup>
 </Project>

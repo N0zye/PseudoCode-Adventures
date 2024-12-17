@@ -142,6 +142,7 @@
     <ClInclude Include="include\SFML\Window\WindowBase.hpp" />
     <ClInclude Include="include\SFML\Window\WindowHandle.hpp" />
     <ClInclude Include="include\SFML\Window\WindowStyle.hpp" />
+    <ClInclude Include="src\Levels.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\MenuUI.h" />
   </ItemGroup>
@@ -158,10 +159,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\textures\door.png" />
+    <Image Include="assets\textures\exit.png" />
     <Image Include="assets\textures\grass.png" />
     <Image Include="assets\textures\key.png" />
     <Image Include="assets\textures\player.png" />
     <Image Include="assets\textures\wall.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="assets\fonts\Inconsolata-Regular.ttf" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

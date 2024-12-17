@@ -13,7 +13,7 @@ int main() {
 
 	// ImGui-SFML initialization
 	ImGui::SFML::Init(window);
-	UIinit(window); // to initialize the UI functions
+	UIinit(window, 1); // to initialize the UI functions // 1 is the starring level
 
 	// Load fonts
 	ImGuiIO& io = ImGui::GetIO();
@@ -25,7 +25,6 @@ int main() {
 	Game game(window);
 	bool isButtonEnabled = true;
 	std::queue<Commands> commandsToBeRun;
-	float deltaTime = 0.0f;
 	sf::Clock clockTime;
 	while (window.isOpen()) {
 		sf::Event event{};
@@ -41,11 +40,12 @@ int main() {
 			}
 			ImGui::SFML::ProcessEvent(event);
 		}
-		deltaTime = clockTime.getElapsedTime().asMilliseconds();
 		ImGui::SFML::Update(window, clockTime.restart());
 
 		// ImGui code
-		ShowMainMenu();
+		if (ShowMainMenu()) {
+			game.loadLevel(GetCurrentLevel()); // i know it's wrong but i don't care
+		}
 		std::string code = ShowCodeEditor(isButtonEnabled);
 		if (!code.empty()) {
 			try {
@@ -67,7 +67,7 @@ int main() {
 
 		// ImGui debug windows
 		#ifdef _DEBUG
-		ImGui::ShowMetricsWindow();
+		//ImGui::ShowMetricsWindow();
 		//ImGui::ShowDemoWindow();
 		//ImGui::ShowFontSelector("##FontSelector");
 		//ImGui::ShowStyleSelector("##StyleSelector");
@@ -75,7 +75,7 @@ int main() {
 
 		// SFML Rendering
 		window.clear();
-		game.Draw();
+		game.draw();
 		ImGui::SFML::Render(window);
 		window.display();
 

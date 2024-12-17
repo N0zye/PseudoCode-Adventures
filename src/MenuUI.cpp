@@ -7,6 +7,7 @@
 
 void ShowInfoMenu();
 void ShowLicenseMenu();
+void ShowTutorialMenu();
 
 sf::RenderWindow* window; // Pointer to the main window
 
@@ -16,34 +17,57 @@ std::string CodeEditorReturn;
 bool toogleInfoMenu = false;
 bool toogleLicenseMenu = false;
 bool toggleErrorMenu = false;
+bool toggleTutorialMenu = false;
+
+int currentLevel;
 
 std::string errorCommand;
 
-
-void UIinit(sf::RenderWindow& _window) {
+void UIinit(sf::RenderWindow& _window, int startingLevel) {
 	window = &_window;
+	currentLevel = startingLevel;
 }
 
-void ShowMainMenu() {
+bool ShowMainMenu() {
+	bool changesOccured = false;
 	// Create a menu bar
 	if (ImGui::BeginMainMenuBar()) {
 		if (ImGui::BeginMenu("Pseudocode Adventures")) {
-			if (ImGui::MenuItem("Exit")) {
+			if (ImGui::MenuItem("Esci")) {
 				window->close();
 			}
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("Options")) {
-			ImGui::MenuItem("non ho fatto in tempo", nullptr);
+		if (ImGui::BeginMenu("Livelli")) { // Just 5 levels for now (and probably forever)
+			if (ImGui::MenuItem("Livello 1", nullptr)) {
+				currentLevel = 1;
+				changesOccured = true;
+			}
+			if (ImGui::MenuItem("Livello 2", nullptr)) {
+				currentLevel = 2;
+				changesOccured = true;
+			}
+			if (ImGui::MenuItem("Livello 3", nullptr)) {
+				currentLevel = 3;
+				changesOccured = true;
+			}
+			if (ImGui::MenuItem("Livello 4", nullptr)) {
+				currentLevel = 4;
+				changesOccured = true;
+			}
+			if (ImGui::MenuItem("Livello 5", nullptr)) {
+				currentLevel = 5;
+				changesOccured = true;
+			}
 			ImGui::EndMenu();
 		}
 
-		if (ImGui::BeginMenu("About")) {
-			if (ImGui::MenuItem("Credits", nullptr)) {
+		if (ImGui::BeginMenu("Informazioni")) {
+			if (ImGui::MenuItem("Crediti", nullptr)) {
 				toogleInfoMenu = true;
 			}
-			if (ImGui::MenuItem("License", nullptr)) {
+			if (ImGui::MenuItem("Licenza", nullptr)) {
 				toogleLicenseMenu = true;
 			}
 			if (ImGui::MenuItem("GitHub Repository", nullptr)) {
@@ -54,15 +78,17 @@ void ShowMainMenu() {
 
 		ImGui::EndMainMenuBar();
 	}
-	// Show the info menu
+	// Show the secondary menus
 	if (toogleInfoMenu) ShowInfoMenu();
 	if (toogleLicenseMenu) ShowLicenseMenu();
 	if (toggleErrorMenu) {
-		ImGui::Begin("Error", &toggleErrorMenu, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("Errore", &toggleErrorMenu, ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoCollapse);
 		ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "Errore, comando: %s non riconosciuto.", errorCommand.c_str());
 		ImGui::End();
 	}
+	if (toggleTutorialMenu) ShowTutorialMenu();
 
+	return changesOccured; // no level change
 }
 
 std::string ShowCodeEditor(bool isButtonEnabled) {
@@ -76,7 +102,19 @@ std::string ShowCodeEditor(bool isButtonEnabled) {
 	ImGui::SetWindowPos(editorPos);
 
 	if (ImGui::Button("Avvia", ImVec2(100, 30))) {
-		if (isButtonEnabled) CodeEditorReturn = textBuffer.data(); // Use the raw buffer as a string
+		if (isButtonEnabled) CodeEditorReturn = textBuffer.data();
+	}
+	ImGui::SameLine();
+
+	if (ImGui::Button("Come giocare", ImVec2(200, 30))) {
+		toggleTutorialMenu = true;
+	}
+	ImGui::SameLine();
+
+	if (ImGui::Button("Resetta", ImVec2(150, 30))) {
+		textBuffer = std::string(2048, '\0');
+		// Find a way to reload the level.
+		// it's going to require a level manager
 	}
 
 	ImGui::InputTextMultiline(
@@ -147,4 +185,51 @@ void ShowLicenseMenu() {
 void ShowErrorMenu(std::string error) {
 	toggleErrorMenu = true;
 	errorCommand = error;
+}
+
+void ShowTutorialMenu() {
+	ImGui::SetNextWindowSize(ImVec2(1660, 440));
+	ImGui::Begin("Tutorial", &toggleTutorialMenu, ImGuiWindowFlags_NoCollapse);
+	ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
+
+	ImGui::TextColored(ImVec4(0.4f, 0.4f, 0.9f, 1.0f), "Benvenuto in PseudoCode Adventures, il gioco in cui devi scrivere il codice per far muovere il tuo personaggio (signor Oriani).");
+	ImGui::TextColored(ImVec4(0.7f, 0.7f, 0.7f, 1.0f), "Ti occuperai di scrivere pseudocodice, una forma molto semplice di programmazione.");
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Il tuo obiettivo e' far raggiungere al signor Oriani la fine del livello, marcata dalla ");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.9f, 0.3f, 0.3f, 1.0f), "X rossa");
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Per fare cio', dovrai scrivere una serie di comandi, per controllare il personaggio, tra i seguenti:");
+
+	ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.4f, 1.0f), "SU");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "- muove verso l'alto di una casella");
+	ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.4f, 1.0f), "GIU");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "- muove verso il basso di una casella");
+	ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.4f, 1.0f), "DESTRA");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "- muove verso destra di una casella");
+	ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.4f, 1.0f), "SINISTRA");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "- muove verso sinistra di una casella");
+	ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.4f, 1.0f), "RACCOGLI");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "- fa raccogliere al signor Oriani la chiave, se una e' presente nella cella su cui si trova");
+	ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.4f, 1.0f), "APRI");
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "- fa aprire al signor Oriani la porta, se c'e' una porta chiusa in una delle caselle attorno a lui ed e' in possesso di una chiave");
+
+	ImGui::TextColored(ImVec4(0.9f, 0.3f, 0.3f, 1.0f), "Attenzione:"); 
+	ImGui::SameLine();
+	ImGui::TextColored(ImVec4(0.9f, 0.4f, 0.4f, 1.0f), "I comandi devono essere scritti esattamente come indicato, altrimenti non verranno riconosciuti e riceverai un messaggio di errore.");
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Non devi preoccuparti di lettere in maiuscolo e minuscolo, ci ho gia' pensato io ;)");
+	ImGui::TextColored(ImVec4(0.8f, 0.8f, 0.8f, 1.0f), "Naturalmente non puoi passare dentro le pareti o porte chiuse, quindi i comandi che violano questa regola non vengono eseguiti.");
+
+	ImGui::TextColored(ImVec4(0.4f, 0.9f, 0.4f, 1.0f), "Buona fortuna!");
+
+	ImGui::PopTextWrapPos();
+	ImGui::End();
+}
+
+int GetCurrentLevel() {
+	return currentLevel;
 }
