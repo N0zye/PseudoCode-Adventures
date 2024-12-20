@@ -45,7 +45,7 @@ Ensure you have the following tools installed:
 This project utilizes the following libraries:
 - **SFML** by Laurent Gomila and contributors ([License](https://www.sfml-dev.org/license.php)).
 - **Dear ImGui** by Omar Cornut and contributors ([License](https://github.com/ocornut/imgui/blob/master/LICENSE.txt)).
-- **imgui-SFML** by Elias Daler ([License](https://github.com/eliasdaler/imgui-sfml/blob/master/LICENSE.txt)).
+- **imgui-SFML** by Elias Daler ([License](https://github.com/SFML/imgui-sfml/blob/master/LICENSE)).
 - **nlohmann/json** by Niels Lohmann ([License](https://github.com/nlohmann/json/blob/develop/LICENSE.MIT)).
 
 ## License
