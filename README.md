@@ -1,5 +1,7 @@
 # Pseudocode Adventures
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/eef51b1c3c6f4b5ab0da7ecdb02bb170)](https://app.codacy.com/gh/N0zye/PseudoCode-Adventures?utm_source=github.com&utm_medium=referral&utm_content=N0zye/PseudoCode-Adventures&utm_campaign=Badge_Grade)
+
 Pseudocode Adventures is an interactive game developed in C++ for the open days of Liceo Scientifico Statale Alfredo Oriani in Ravenna, RA. The game introduces players to basic programming concepts by combining engaging gameplay with real-time scripting mechanics. Players will solve challenges, navigate obstacles, and interact with the game world by writing pseudocode commands that control the main character's actions.
 
 ## Features
