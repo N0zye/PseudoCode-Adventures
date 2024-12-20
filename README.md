@@ -22,7 +22,6 @@ The game is built using the following libraries and frameworks:
 ### Prerequisites
 Ensure you have the following tools installed:
 - Visual Studio (2019 or higher) with C++ development tools.
-- SFML (version 2.5 or higher).
 
 ### Build Steps
 1. Clone the repository:
