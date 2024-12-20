@@ -117,30 +117,28 @@ void UIManager::displayCreditsMenu() {
 }
 
 void UIManager::displayLicenseMenu() {
-	ImGui::SetNextWindowSize(ImVec2(1000, 445), ImGuiCond_Once);
+	ImGui::SetNextWindowSize(ImVec2(1000, 512), ImGuiCond_Once);
 
-	ImGui::OpenPopup("Licenza");
-	if (ImGui::BeginPopupModal("Licenza", &showLicenseMenu, ImGuiWindowFlags_NoResize)) {
+	ImGui::OpenPopup("MIT License");
+	if (ImGui::BeginPopupModal("MIT License", &showLicenseMenu, ImGuiWindowFlags_NoResize)) {
 		// CC BY-NC-SA License
 
 		ImGui::PushTextWrapPos(ImGui::GetContentRegionAvail().x);
 
-		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f), "CC BY-NC-SA License");
 		ImGui::TextColored(ImVec4(0.5f, 0.5f, 0.5f, 1.0f),
-			"This work is licensed under a Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.\nYou are free to:\n"
-			"- Share: copy and redistribute the material in any medium or format\n"
-			"- Adapt: remix, transform, and build upon the material\n"
-			"Under the following terms:\n"
-			"- Attribution: You must give appropriate credit, provide a link to the license, and indicate if changes were made.\n"
-			"- NonCommercial: You may not use the material for commercial purposes.\n"
-			"- ShareAlike: If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original.\n"
-			"No additional restrictions: You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits."
-			"For more details, see the full license text at:"
+			"Copyright 2024 Michele Berni\n\n"
+			"Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files(the \"Software\"), "
+			"to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, "
+			"and /or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:\n\n"
+			"The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.\n\n"
+			"THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, " 
+			"FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, "
+			"WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
 			);
 
-		if (ImGui::Button("https://creativecommons.org/licenses/by-nc-sa/4.0/", ImVec2(ImGui::GetContentRegionAvail().x, 30))) {
+		if (ImGui::Button("https://opensource.org/license/mit", ImVec2(ImGui::GetContentRegionAvail().x, 30))) {
 			// Open the license link in the default web browser
-			system("start https://creativecommons.org/licenses/by-nc-sa/4.0/");
+			system("start https://opensource.org/license/mit");
 		}
 
 		ImGui::PopTextWrapPos();

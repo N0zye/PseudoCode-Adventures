@@ -57,7 +57,7 @@ int main() {
 
 		// ImGui debug windows
 		#ifdef _DEBUG
-		//ImGui::ShowMetricsWindow();
+		ImGui::ShowMetricsWindow();
 		//ImGui::ShowDemoWindow();
 		//ImGui::ShowFontSelector("##FontSelector");
 		//ImGui::ShowStyleSelector("##StyleSelector");
