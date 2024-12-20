@@ -2,17 +2,25 @@
 #include <SFML/Graphics.hpp>
 #include "Levels.h"
 
-class Grid
-{
+#define HEIGHT 10
+#define WIDTH 10
+
+class Grid {
 private:
     sf::Texture textures[6];              // Array to store the sprites
     sf::RenderWindow* window;             // Pointer to the main window
+    std::vector<Level> levels;
+    int currentLevel;
 public:
-    int grid[HEIGHT][WIDTH];
-
+    std::vector<std::vector<int>> grid;
 public:
-    Grid(sf::RenderWindow& window);
-    void loadLevel(int levelNumber);
+    Grid();
+	void init(sf::RenderWindow& window);
+	void loadLevels();
+    void selecLevel(int levelNumber);
     void draw();
     std::pair<float, float> getPlayerSpawnPoint();
+	std::vector<std::string> getLevelNames();
+	Level getCurentLevel();
+    int getCurrentLevelIndex();
 };

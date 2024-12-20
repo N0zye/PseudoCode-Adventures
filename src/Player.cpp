@@ -4,18 +4,33 @@
 #include <thread>
 #include <chrono>
 
-Player::Player(sf::RenderWindow& window, Grid& grid) {
+Player::Player() {}
+
+void Player::init(sf::RenderWindow& window, Grid& grid) {
 	this->window = &window;
 	this->grid = &grid;
 
-	x = grid.getPlayerSpawnPoint().first;
-	y = grid.getPlayerSpawnPoint().second;
+	x = this->grid->getPlayerSpawnPoint().first;
+	y = this->grid->getPlayerSpawnPoint().second;
 
 	hasKey = false;
-	
+
 	if (!playerTexture.loadFromFile("assets/textures/player.png")) {
-		std::cerr << "Error loading player texture!" << std::endl;
+		throw std::runtime_error("Errore nel caricamento delle texture del player");
 	}
+}
+
+bool Player::checkLevelCompletion() {
+	// Scaling factor to get the grid cell size
+	float gridcellSize = (0.55078125f * window->getSize().x / WIDTH);
+	// Scaling the player's position to the grid
+	int scaledX = x / gridcellSize;
+	int scaledY = (y - 30) / gridcellSize;
+	// Check if the player is on the exit cell
+	if (grid->grid[scaledY][scaledX] == 5) {
+		return true;
+	}
+	return false;
 }
 
 void Player::draw() {

@@ -1,8 +1,5 @@
 #pragma once
 
-#define HEIGHT 10
-#define WIDTH 10
-
 // Legend
 // 0 - Empty
 // 1 - Wall
@@ -12,21 +9,17 @@
 // 5 - Exit
 // 6 - Player spawnpoint
 
-// Level 0 is just all 0's
-const int level0[HEIGHT][WIDTH] = {
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+class Level {
+public:
+    std::string name;
+    std::vector<std::vector<int>> grid;
+    Level(std::string name, std::vector<std::vector<int>> grid) : name(name), grid(grid) {}
 };
 
-const int level1[HEIGHT][WIDTH] = {
+// Default level will be loaded if reading from file fails
+inline const std::string defaultLevelName = "Default level";
+
+inline std::vector<std::vector<int>> defaultLevelGrid = {
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
     { 0, 0, 0, 1, 1, 1, 1, 0, 0, 0 },
@@ -38,3 +31,5 @@ const int level1[HEIGHT][WIDTH] = {
     { 0, 0, 0, 0, 0, 0, 6, 0, 0, 0 },
     { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
+
+inline Level defaultLevel(defaultLevelName, defaultLevelGrid);

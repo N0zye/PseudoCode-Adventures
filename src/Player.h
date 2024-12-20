@@ -15,12 +15,14 @@ enum Commands {
 class Player {
 private:
 	sf::RenderWindow* window;
-	sf::Texture playerTexture;	
 	Grid* grid;
+	sf::Texture playerTexture;	
 	float x, y;
 	bool hasKey;
 public:
-	Player(sf::RenderWindow& window, Grid& grid);
+	Player();
+	void init(sf::RenderWindow& window, Grid& grid);
 	void executeCommand(Commands command);
+	bool checkLevelCompletion();
 	void draw();
 };

@@ -1,7 +1,9 @@
-﻿#include "imgui.h" // necessary for ImGui::*, imgui-SFML.h doesn't include imgui.h
-#include "imgui-SFML.h" // for ImGui::SFML::* functions and SFML-specific overloads
+﻿#include <imgui.h> // necessary for ImGui::*, imgui-SFML.h doesn't include imgui.h
+#include <imgui-SFML.h> // for ImGui::SFML::* functions and SFML-specific overloads
 #include <SFML\Graphics.hpp>
-#include "MenuUI.h"
+
+#include "EventBus.h"
+#include "UIManager.h"
 #include "Game.h"
 
 #include <iostream>
@@ -10,10 +12,8 @@ int main() {
 	// Window setup
 	sf::RenderWindow window(sf::VideoMode::getDesktopMode(), "Pseudocode Adventures", sf::Style::Fullscreen);
 	window.setVerticalSyncEnabled(true);
-
 	// ImGui-SFML initialization
 	ImGui::SFML::Init(window);
-	UIinit(window, 1); // to initialize the UI functions // 1 is the starring level
 
 	// Load fonts
 	ImGuiIO& io = ImGui::GetIO();
@@ -21,10 +21,17 @@ int main() {
 	io.Fonts->AddFontFromFileTTF("assets/fonts/Inconsolata-Regular.ttf", 24.0f, nullptr, io.Fonts->GetGlyphRangesDefault());
 	io.Fonts->Build();
 	ImGui::SFML::UpdateFontTexture(); // If this is the solution I'll kill myself (it is) 
+	// By removing the default and adding ours it becomes the default one
 
-	Game game(window);
-	bool isButtonEnabled = true;
-	std::queue<Commands> commandsToBeRun;
+	// EventBus setup
+	EventBus bus;
+
+	// UIManager setup
+	UIManager UI(window, bus);
+	
+	// Game setup
+	Game game(window, bus);
+
 	sf::Clock clockTime;
 	while (window.isOpen()) {
 		sf::Event event{};
@@ -42,28 +49,11 @@ int main() {
 		}
 		ImGui::SFML::Update(window, clockTime.restart());
 
-		// ImGui code
-		if (ShowMainMenu()) {
-			game.loadLevel(GetCurrentLevel()); // i know it's wrong but i don't care
-		}
-		std::string code = ShowCodeEditor(isButtonEnabled);
-		if (!code.empty()) {
-			try {
-				// to avoid adding commands to alredy going ones
-				if (commandsToBeRun.empty()) commandsToBeRun = ParseCode(code);
-			}
-			catch (std::exception e) {
-				ShowErrorMenu(e.what());
-			}
-		}
-		if (commandsToBeRun.empty()) {
-			isButtonEnabled = true;
-		}
-		else {
-			isButtonEnabled = false;
-			game.runCommand(commandsToBeRun.front());
-			commandsToBeRun.pop();
-		}
+
+		UI.displayCodeEditor();
+		UI.displayMainMenuBar();
+
+		game.update();
 
 		// ImGui debug windows
 		#ifdef _DEBUG

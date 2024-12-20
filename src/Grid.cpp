@@ -1,22 +1,30 @@
 #include "Grid.h"
 
 #include <SFML/Graphics.hpp>
+#include <json.hpp>
+using json = nlohmann::json;
 #include <iostream>
 #include <cstring>
+#include <fstream>
+#include <string>
+
 #include "Levels.h"
 
 #define LEVELSIZE sizeof(int) * HEIGHT * WIDTH
 
-Grid::Grid(sf::RenderWindow& window) : window(&window) {
+Grid::Grid() {}
 
-    // Loading textures
-    sf::Texture grassTexture, wallTexture, keyTexture, closedDoorTexture, openDoorTexture, exitTexture;
-    if (!grassTexture.loadFromFile("assets/textures/grass.png")) {
-        std::cerr << "Error loading grass texture!" << std::endl;
-    }
-    if (!wallTexture.loadFromFile("assets/textures/wall.png")) {
-        std::cerr << "Error loading wall texture!" << std::endl;
-    }
+void Grid::init(sf::RenderWindow& window) {
+	this->window = &window;
+
+	// Loading textures
+	sf::Texture grassTexture, wallTexture, keyTexture, closedDoorTexture, openDoorTexture, exitTexture;
+	if (!grassTexture.loadFromFile("assets/textures/grass.png")) {
+		std::cerr << "Error loading grass texture!" << std::endl;
+	}
+	if (!wallTexture.loadFromFile("assets/textures/wall.png")) {
+		std::cerr << "Error loading wall texture!" << std::endl;
+	}
 	if (!keyTexture.loadFromFile("assets/textures/key.png")) {
 		std::cerr << "Error loading key texture!" << std::endl;
 	}
@@ -37,19 +45,39 @@ Grid::Grid(sf::RenderWindow& window) : window(&window) {
 	textures[4] = openDoorTexture;
 	textures[5] = exitTexture;
 
-	// Load the first level
-	loadLevel(1);
+	// Load levels
+	loadLevels();
+
+	// Select the first level
+	selecLevel(0); // will run only if the levels are loaded correctly
+	// in both cases currentLevel will be set to 0
 }
 
-void Grid::loadLevel(int levelNumber) { //TODO: implement a better way to load levels (maybe from a file)
-	switch (levelNumber) {
-	case 1:
-		std::memcpy(grid, level1, LEVELSIZE);
-		break;
-	default: // In case of unrecognized level
-		std::memcpy(grid, level0, LEVELSIZE);
-		break;
+void Grid::loadLevels() {
+	std::ifstream file("assets/levels.json");
+	if (!file.is_open()) {
+		levels.push_back(defaultLevel);
+		selecLevel(0);
+		throw std::runtime_error("Errore nel caricamento dei livelli. caricato solo il livello default");
 	}
+	json j;
+	file >> j;
+	file.close();
+
+	for (const auto& level : j["levels"]) {
+		std::string name = level["name"];
+		std::vector<std::vector<int>> grid = level["grid"];
+		levels.emplace_back(name, grid);
+	}
+}
+
+void Grid::selecLevel(int levelNumber) { //!TODO: implement a better way to load levels (maybe from a file)
+	if (levelNumber < 0 || levelNumber >= levels.size()) {
+		// Shouldn't happen but if it does just return
+		return;
+	}
+	grid = levels[levelNumber].grid;
+	currentLevel = levelNumber;
 }
 
 
@@ -123,3 +151,19 @@ std::pair<float, float> Grid::getPlayerSpawnPoint() {
 	}
 	return result;
 }
+
+std::vector<std::string> Grid::getLevelNames() {
+	std::vector<std::string> levelNames;
+	for (auto& level : levels) {
+		levelNames.push_back(level.name);
+	}
+	return levelNames;
+}
+
+Level Grid::getCurentLevel() {
+	return levels[currentLevel];
+}
+
+int Grid::getCurrentLevelIndex() {
+	return currentLevel;
+}	
